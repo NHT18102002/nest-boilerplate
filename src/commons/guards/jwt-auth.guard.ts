@@ -17,6 +17,8 @@ export interface JwtPayload {
   sub: string;
   email: string;
   role: string;
+  sessionId: string;
+  type: 'access';
 }
 
 @Injectable()
@@ -47,6 +49,11 @@ export class JwtAuthGuard implements CanActivate {
 
     try {
       const payload = await this.jwtService.verifyAsync<JwtPayload>(token);
+
+      if (payload.type !== 'access' || !payload.sub) {
+        throw new UnauthorizedException('Invalid or expired access token');
+      }
+
       const user = await this.userRepository.findOne({
         where: { id: payload.sub },
         relations: ['media'],

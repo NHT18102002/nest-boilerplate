@@ -16,6 +16,8 @@ interface MemoryEntry {
   timer?: NodeJS.Timeout;
 }
 
+const MAX_MEMORY_TIMER_MS = 2_147_483_647;
+
 /**
  * RedisService provides a wrapper around ioredis
  * to simplify publishing, subscribing, and key management.
@@ -656,9 +658,12 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
 
     if (preservedTtlMs && preservedTtlMs > 0) {
       entry.expiresAt = Date.now() + preservedTtlMs;
-      entry.timer = setTimeout(() => {
-        this.memoryStore.delete(key);
-      }, preservedTtlMs);
+
+      if (preservedTtlMs <= MAX_MEMORY_TIMER_MS) {
+        entry.timer = setTimeout(() => {
+          this.memoryStore.delete(key);
+        }, preservedTtlMs);
+      }
     }
 
     this.memoryStore.set(key, entry);

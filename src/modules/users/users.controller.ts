@@ -44,10 +44,7 @@ export class UsersController {
       serialization: User,
     },
   })
-  async updateMe(
-    @CurrentUser() user: User,
-    @Body() dto: UpdateProfileDto,
-  ) {
+  async updateMe(@CurrentUser() user: User, @Body() dto: UpdateProfileDto) {
     return this.usersService.updateProfile(user.id, dto);
   }
 
@@ -56,6 +53,7 @@ export class UsersController {
   @Post('register')
   @HttpCode(HttpStatus.OK)
   @Doc({
+    auth: false,
     summary: 'Role: None - Register a new user',
     description:
       'Create a pending user registration. User data is stored in Redis until email verification is completed.',
@@ -74,6 +72,7 @@ export class UsersController {
   @Post('verify-otp')
   @HttpCode(HttpStatus.OK)
   @Doc({
+    auth: false,
     summary: 'Role: None - Verify OTP and complete registration',
     description:
       'Verify the OTP sent to email and create the user account in database.',
@@ -92,6 +91,7 @@ export class UsersController {
   @Post('resend-otp')
   @HttpCode(HttpStatus.OK)
   @Doc({
+    auth: false,
     summary: 'Role: None - Resend OTP for pending registration',
     description:
       'Resend the verification OTP to the email for pending registration.',
