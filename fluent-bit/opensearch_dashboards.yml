@@ -1,0 +1,6 @@
+server.name: opensearch-dashboards
+server.host: '0.0.0.0'
+opensearch.hosts: ['https://opensearch:9200']
+opensearch.ssl.verificationMode: none
+opensearch_security.enabled: true
+opensearch_security.multitenancy.enabled: true
